@@ -13,7 +13,7 @@ export class Catalog {
   @Field()
   description: string;
 
-  @Column()
+  @Column({ length: 1 })
   @Field()
   status: string;
 
