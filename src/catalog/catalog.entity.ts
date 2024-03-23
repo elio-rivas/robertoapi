@@ -1,7 +1,7 @@
 import { Column, Entity, ObjectIdColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
-@Entity()
+@Entity({ name: 'operative.general_catalog'})
 @ObjectType()
 export class Catalog {
 
@@ -21,27 +21,27 @@ export class Catalog {
   @Field()
   code: number;
 
-  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ name:'created_at', default: () => 'CURRENT_TIMESTAMP' })
   @Field()
   createdAt: Date;
 
-  @Column()
+  @Column({name:'created_by'})
   @Field()
   createdBy: number;
 
-  @Column({ nullable: true })
+  @Column({ name:'updated_at', nullable: true })
   @Field({ nullable: true })
   updatedAt: Date | null;
 
-  @Column({ nullable: true })
+  @Column({ name:'updated_by', nullable: true })
   @Field({ nullable: true })
   updatedBy: number | null;
 
-  @Column({ default: 'es' })
+  @Column({ name:'language_code', default: 'es' })
   @Field()
   languageCode: string;
 
-  @Column({ default: 'US' })
+  @Column({name:'country_code', default: 'US' })
   @Field()
   countryCode: string;
 

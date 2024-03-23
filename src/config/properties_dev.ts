@@ -11,7 +11,7 @@ const devConfig: PostgresConnectionOptions = {
   entities: [
     Catalog
   ],
-  synchronize: true,
+  synchronize: false,
 };
 
 export default devConfig;
