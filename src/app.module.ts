@@ -10,7 +10,7 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 const environment = process.env.NODE_ENV || 'development';
 const databaseConfig: PostgresConnectionOptions = environment === 'production' ? prodConfig : devConfig;
 
-console.log(`Active environment: ' + ${environment}`);
+//console.log(`Active environment: ' + ${environment}`);
 
 @Module({
   imports: [

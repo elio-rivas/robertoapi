@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { EntityNotFoundError  } from 'typeorm/error/EntityNotFoundError';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Catalog } from './catalog.entity';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { CatalogLogger } from './catalog.logger';
+import { ID } from '@nestjs/graphql';
+import { CreateCatalogInput } from './catalog.input';
 
 @Injectable()
 export class CatalogService {
@@ -11,24 +14,59 @@ export class CatalogService {
         private logger: CatalogLogger
     ){}
 
-    async createCatalog(description: string, status: string, code:number, createdAt:Date, createdBy:number):Promise<Catalog> {
+    async getCatalog(id:number):Promise<Catalog>{
         try {
-            if (!description) {
-                throw new Error('Description is required');
+            const options: FindOneOptions<Catalog> = {where: {id}};
+            return await this.catalogRepository.findOneOrFail(options);    
+        } catch (error) {
+            if(error instanceof EntityNotFoundError) {
+                // Handle case when the entity is not found
+                // For example, you might want to throw a custom exception or return null
+                throw new NotFoundException(`Catalog with id ${id} not found`);
             }
+            // Handle other types of errors, or rethrow the error if it's unexpected
+            throw error;
+        }
+        
+    }
 
+    async createCatalog(createCatalogInput: CreateCatalogInput): Promise<Catalog> {
+        console.log(createCatalogInput); // Add this line to debug the input
+        
+        try {
+            const {description, status, code, createdBy, updatedAt, updatedBy} = createCatalogInput;
+    
+            if (description === null || description === undefined || status === null || status === undefined || code === null || code === undefined) {
+                throw new Error('Description, status, and code are required');
+            }
+                
+            // Automatically set createdAt if not provided
+            if (!createCatalogInput.createdAt) {
+                createCatalogInput.createdAt = new Date();
+            }
+    
+            // Provide default values for updatedAt and updatedBy if not provided
+            if (updatedAt === null || updatedAt === undefined) {
+                createCatalogInput.updatedAt = null; // Or any other default value that meets your constraints
+            }
+            if (updatedBy === null || updatedBy === undefined) {
+                createCatalogInput.updatedBy = null; // Or any other default value that meets your constraints
+            }
+    
             const catalog = this.catalogRepository.create({
                 description,
                 status,
                 code,
-                createdAt,
-                createdBy
+                createdAt: createCatalogInput.createdAt,
+                createdBy,
+                updatedAt: createCatalogInput.updatedAt,
+                updatedBy: createCatalogInput.updatedBy
             });      
             return await this.catalogRepository.save(catalog);
-        }catch (error) {
+        } catch (error) {
             this.logger.error('Error creating catalog: ', error.stack);
             throw error; // Re-throw the error to propagate it up the call stack            
         }        
-        
     }
+    
 }
