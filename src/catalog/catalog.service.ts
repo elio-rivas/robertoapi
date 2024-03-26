@@ -10,7 +10,8 @@ import { CreateCatalogInput } from './catalog.input';
 @Injectable()
 export class CatalogService {
     constructor(
-        @InjectRepository(Catalog) private catalogRepository: Repository<Catalog>,
+        @InjectRepository(Catalog)
+        private catalogRepository: Repository<Catalog>,
         private logger: CatalogLogger
     ){}
 
@@ -30,9 +31,11 @@ export class CatalogService {
         
     }
 
+    async getCatalogs():Promise<Catalog[]>{
+        return await this.catalogRepository.find();
+    }
+
     async createCatalog(createCatalogInput: CreateCatalogInput): Promise<Catalog> {
-        console.log(createCatalogInput); // Add this line to debug the input
-        
         try {
             const {description, status, code, createdBy, updatedAt, updatedBy} = createCatalogInput;
     

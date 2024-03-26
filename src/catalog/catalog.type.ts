@@ -2,7 +2,7 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType("Catalog")
 export class CatalogType {
-  @Field(type=>ID)
+  @Field()
   id: number
 
   @Field()
