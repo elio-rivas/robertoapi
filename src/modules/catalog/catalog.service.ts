@@ -70,5 +70,41 @@ export class CatalogService {
             throw error; // Re-throw the error to propagate it up the call stack            
         }        
     }
-    
+
+    async getCatalogTranslation(id: number | null, lancode: string, ccode: string): Promise<Catalog[]> {
+        let query = `
+        SELECT
+            gc.id,
+            COALESCE(gct.description, gc.description) AS description
+        FROM
+            operative.general_catalog gc
+                LEFT JOIN
+            operative.general_catalog_translations gct ON gc.id = gct.catalog_id
+    `;
+
+        const parameters = [];
+        if (id !== null) {
+            query += ` WHERE gc.id = $1`;
+            parameters.push(id);
+        }
+
+        if (id !== null) {
+            query += ` AND (gct.language_code = $2 AND gct.country_code = $3)`;
+            parameters.push(lancode, ccode);
+        } else {
+            query += ` AND (gct.language_code = $1 AND gct.country_code = $2)`;
+            parameters.push(lancode, ccode);
+        }
+
+        query += ` ORDER BY gc.id`;
+
+        try {
+            return await this.catalogRepository.query(query, parameters);
+        } catch (error) {
+            this.logger.error(`Error retrieving catalog translations for ID ${id}: ${error.message}`, error.stack);
+            throw new NotFoundException(`Catalog translations for ID ${id} not found`);
+        }
+    }
+
+
 }

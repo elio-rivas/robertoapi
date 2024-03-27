@@ -31,6 +31,21 @@ export class CatalogResolver {
     }
   }
 
+  @Query(returns => [CatalogType])
+  async getCatalogTranslation(
+    @Args('id', { nullable: true, type: () => Int }) id: number | null,
+    @Args('lancode', { type: () => String }) lancode: string,
+    @Args('ccode', { type: () => String }) ccode: string,
+  ): Promise<CatalogType[]>{
+    try{
+      const catalogtrans = await this.service.getCatalogTranslation(id, lancode, ccode);
+      return catalogtrans.map(cat =>({ ...cat, id: +cat.id}))
+    }catch (error){
+      this.logger.error('Error getting catalogs in resolver', error.stack);
+      throw new Error('Failed to get catalogs'); // You can customize the error message as needed
+    }
+  }
+
   @Mutation(returns => CatalogType)
   async createCatalog( @Args('createCatalogInput') createCatalogInput: CreateCatalogInput ){
     try{
