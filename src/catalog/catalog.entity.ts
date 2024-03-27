@@ -1,4 +1,4 @@
-import { Column, Entity, ObjectIdColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @Entity({ name: 'operative.general_catalog'})

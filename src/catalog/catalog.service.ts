@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Catalog } from './catalog.entity';
 import { FindOneOptions, Repository } from 'typeorm';
 import { CatalogLogger } from './catalog.logger';
-import { ID } from '@nestjs/graphql';
 import { CreateCatalogInput } from './catalog.input';
 
 @Injectable()

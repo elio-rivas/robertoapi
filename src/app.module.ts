@@ -6,6 +6,8 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import devConfig from './config/properties_dev';
 import prodConfig from './config/properties_prod';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import { CatalogtranModule } from './catalogtran/catalogtran.module';
+
 
 const environment = process.env.NODE_ENV || 'development';
 const databaseConfig: PostgresConnectionOptions = environment === 'production' ? prodConfig : devConfig;
@@ -23,6 +25,7 @@ const databaseConfig: PostgresConnectionOptions = environment === 'production' ?
       playground: true,
     }),
     CatalogModule,
+    CatalogtranModule
   ],
 })
 export class AppModule {}
