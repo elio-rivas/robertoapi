@@ -27,7 +27,7 @@ export class CatalogResolver {
   }
 
   @Mutation(returns => CatalogType)
-  async createOrUpdateCatalog( @Args('createOrUpdateCatalog') CatalogInput: CatalogInput ){
+  async createOrUpdateCatalog( @Args('CatalogInput') CatalogInput: CatalogInput ){
     try{
       return await this.service.createOrUpdateCatalog(CatalogInput);
     }catch (error) {

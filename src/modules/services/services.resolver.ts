@@ -1,7 +1,8 @@
-import { Args, Int, Query, Resolver } from "@nestjs/graphql";
+import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { ServicesType } from "./services.type";
 import { ServicesService } from "./services.service";
 import { CatalogLogger } from "../catalog/catalog.logger";
+import { ServicesInput } from "./services.input";
 
 @Resolver(of => ServicesType)
 export class ServicesResolver{
@@ -23,6 +24,16 @@ export class ServicesResolver{
     }catch (error){
       this.logger.error('Error getting services in resolver', error.stack);
       throw new Error('Failed to get services'); // You can customize the error message as needed
+    }
+  }
+
+  @Mutation(returns => ServicesType)
+  async createOrUpdateServices( @Args('ServicesInput') ServicesInput: ServicesInput ){
+    try{
+      return await this.service.createOrUpdateServices(ServicesInput);
+    }catch (error) {
+      this.logger.error('Error creating catalog in resolver', error.stack);
+      throw new Error('Failed to create catalog'); // You can customize the error message as needed
     }
   }
 
