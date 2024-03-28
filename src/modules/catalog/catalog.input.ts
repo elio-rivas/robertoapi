@@ -1,7 +1,10 @@
 import { Field, InputType } from "@nestjs/graphql";
 
 @InputType()
-export class CreateCatalogInput {
+export class CatalogInput {
+
+    @Field({nullable:true})
+    id: number;
 
     @Field()
     description: string;

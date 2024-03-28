@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Catalog } from './catalog.entity';
 import { FindOneOptions, Repository } from 'typeorm';
 import { CatalogLogger } from './catalog.logger';
-import { CreateCatalogInput } from './catalog.input';
+import { CatalogInput } from './catalog.input';
 
 @Injectable()
 export class CatalogService {
@@ -34,7 +34,7 @@ export class CatalogService {
         return await this.catalogRepository.find();
     }
 
-    async createCatalog(createCatalogInput: CreateCatalogInput): Promise<Catalog> {
+    async createCatalog(createCatalogInput: CatalogInput): Promise<Catalog> {
         try {
             const {description, status, code, createdBy, updatedAt, updatedBy} = createCatalogInput;
     
@@ -69,6 +69,59 @@ export class CatalogService {
             this.logger.error('Error creating catalog: ', error.stack);
             throw error; // Re-throw the error to propagate it up the call stack            
         }        
+    }
+
+    async createOrUpdateCatalog(catalogInput: CatalogInput): Promise<Catalog>{
+        try{
+            const {id, description, status, code, createdBy, updatedAt, updatedBy } = catalogInput;
+            if (description === null || description === undefined || status === null || status === undefined || code === null || code === undefined) {
+                throw new Error('Description, status, and code are required');
+            }
+
+            //Automatically set createdAt if not provided
+            if(!catalogInput.createdAt){
+                catalogInput.createdAt = new Date();
+            }
+
+            //Provide default values for updatedAt and updatedBy if not provided
+            if (updatedAt === null || updatedAt === undefined) {
+                catalogInput.updatedAt = null; // Or any other default value that meets your constraints
+            }
+            if (updatedBy === null || updatedBy === undefined) {
+                catalogInput.updatedBy = null; // Or any other default value that meets your constraints
+            }
+            let catalog: Catalog;
+            if (id) {
+                // Update existing record
+                catalog = await this.catalogRepository.findOne({ where: { id } });
+                if (!catalog) {
+                    throw new Error('Catalog not found');
+                }
+
+                catalog.description = description;
+                catalog.status = status;
+                catalog.code = code;
+                catalog.updatedAt = catalogInput.updatedAt;
+                catalog.updatedBy = updatedBy;
+            } else {
+                // Create new record
+                catalog = this.catalogRepository.create({
+                    description,
+                    status,
+                    code,
+                    createdAt: catalogInput.createdAt,
+                    createdBy,
+                    updatedAt: catalogInput.updatedAt,
+                    updatedBy: updatedBy
+                });
+            }
+
+            return await this.catalogRepository.save(catalog);
+
+        }catch (error) {
+            this.logger.error('Error creating catalog: ', error.stack);
+            throw error; // Re-throw the error to propagate it up the call stack
+        }
     }
 
     async getCatalogTranslation(id: number | null, lancode: string, ccode: string): Promise<Catalog[]> {

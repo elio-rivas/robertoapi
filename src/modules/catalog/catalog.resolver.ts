@@ -2,7 +2,7 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CatalogType } from './catalog.type';
 import { CatalogService } from './catalog.service';
 import { CatalogLogger } from './catalog.logger';
-import { CreateCatalogInput } from './catalog.input';
+import { CatalogInput } from './catalog.input';
 
 @Resolver(of => CatalogType)
 export class CatalogResolver {
@@ -47,9 +47,9 @@ export class CatalogResolver {
   }
 
   @Mutation(returns => CatalogType)
-  async createCatalog( @Args('createCatalogInput') createCatalogInput: CreateCatalogInput ){
+  async createOrUpdateCatalog( @Args('createOrUpdateCatalog') CatalogInput: CatalogInput ){
     try{
-      return await this.service.createCatalog(createCatalogInput);
+      return await this.service.createOrUpdateCatalog(CatalogInput);
     }catch (error) {
       this.logger.error('Error creating catalog in resolver', error.stack);
       throw new Error('Failed to create catalog'); // You can customize the error message as needed
