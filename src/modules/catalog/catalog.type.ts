@@ -1,9 +1,9 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 
-@ObjectType("Catalog")
+@ObjectType('Catalog')
 export class CatalogType {
   @Field()
-  id: number
+  id: number;
 
   @Field()
   description: string;
@@ -31,5 +31,4 @@ export class CatalogType {
 
   @Field({ defaultValue: 'US' }) // Use default value directly in the decorator
   countryCode: string;
-
 }

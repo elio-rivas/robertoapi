@@ -2,16 +2,22 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { CatalogModule } from './catalog/catalog.module';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { TypeOrmModule} from '@nestjs/typeorm';
 import devConfig from '../config/properties_dev';
 import prodConfig from '../config/properties_prod';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import { ServicesModule } from './services/services.module';
 
 
 const environment = process.env.NODE_ENV || 'development';
 const databaseConfig: PostgresConnectionOptions = environment === 'production' ? prodConfig : devConfig;
 
 //console.log(`Active environment: ' + ${environment}`);
+
+const ServicesCatalog = [
+  CatalogModule,
+  ServicesModule
+];
 
 @Module({
   imports: [
@@ -23,8 +29,7 @@ const databaseConfig: PostgresConnectionOptions = environment === 'production' ?
       autoSchemaFile: true,
       playground: true,
     }),
-    CatalogModule
-
+    ...ServicesCatalog
   ],
 })
 export class AppModule {}

@@ -14,63 +14,6 @@ export class CatalogService {
         private logger: CatalogLogger
     ){}
 
-    async getCatalog(id:number):Promise<Catalog>{
-        try {
-            const options: FindOneOptions<Catalog> = {where: {id}};
-            return await this.catalogRepository.findOneOrFail(options);    
-        } catch (error) {
-            if(error instanceof EntityNotFoundError) {
-                // Handle case when the entity is not found
-                // For example, you might want to throw a custom exception or return null
-                throw new NotFoundException(`Catalog with id ${id} not found`);
-            }
-            // Handle other types of errors, or rethrow the error if it's unexpected
-            throw error;
-        }
-        
-    }
-
-    async getCatalogs():Promise<Catalog[]>{
-        return await this.catalogRepository.find();
-    }
-
-    async createCatalog(createCatalogInput: CatalogInput): Promise<Catalog> {
-        try {
-            const {description, status, code, createdBy, updatedAt, updatedBy} = createCatalogInput;
-    
-            if (description === null || description === undefined || status === null || status === undefined || code === null || code === undefined) {
-                throw new Error('Description, status, and code are required');
-            }
-                
-            // Automatically set createdAt if not provided
-            if (!createCatalogInput.createdAt) {
-                createCatalogInput.createdAt = new Date();
-            }
-    
-            // Provide default values for updatedAt and updatedBy if not provided
-            if (updatedAt === null || updatedAt === undefined) {
-                createCatalogInput.updatedAt = null; // Or any other default value that meets your constraints
-            }
-            if (updatedBy === null || updatedBy === undefined) {
-                createCatalogInput.updatedBy = null; // Or any other default value that meets your constraints
-            }
-    
-            const catalog = this.catalogRepository.create({
-                description,
-                status,
-                code,
-                createdAt: createCatalogInput.createdAt,
-                createdBy,
-                updatedAt: createCatalogInput.updatedAt,
-                updatedBy: createCatalogInput.updatedBy
-            });      
-            return await this.catalogRepository.save(catalog);
-        } catch (error) {
-            this.logger.error('Error creating catalog: ', error.stack);
-            throw error; // Re-throw the error to propagate it up the call stack            
-        }        
-    }
-
     async createOrUpdateCatalog(catalogInput: CatalogInput): Promise<Catalog>{
         try{
             const {id, description, status, code, createdBy, updatedAt, updatedBy } = catalogInput;
@@ -124,7 +67,7 @@ export class CatalogService {
         }
     }
 
-    async getCatalogTranslation(id: number | null, lancode: string, ccode: string): Promise<Catalog[]> {
+    async getCatalogs(id: number | null, lancode: string, ccode: string): Promise<Catalog[]> {
         let query = `
         SELECT
             gc.id,
@@ -133,20 +76,13 @@ export class CatalogService {
             operative.general_catalog gc
                 LEFT JOIN
             operative.general_catalog_translations gct ON gc.id = gct.catalog_id
-    `;
+                AND (gct.language_code = $1 AND gct.country_code = $2)`;
 
-        const parameters = [];
-        if (id !== null) {
-            query += ` WHERE gc.id = $1`;
-            parameters.push(id);
-        }
+        const parameters = [lancode, ccode];
 
         if (id !== null) {
-            query += ` AND (gct.language_code = $2 AND gct.country_code = $3)`;
-            parameters.push(lancode, ccode);
-        } else {
-            query += ` AND (gct.language_code = $1 AND gct.country_code = $2)`;
-            parameters.push(lancode, ccode);
+            query += ` WHERE gc.id = $${parameters.length + 1}`;
+            parameters.push(id.toString());
         }
 
         query += ` ORDER BY gc.id`;
@@ -158,6 +94,8 @@ export class CatalogService {
             throw new NotFoundException(`Catalog translations for ID ${id} not found`);
         }
     }
+
+
 
 
 }

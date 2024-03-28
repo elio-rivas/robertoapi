@@ -11,35 +11,15 @@ export class CatalogResolver {
     private logger: CatalogLogger
   ){}
 
-  @Query(returns => CatalogType)
-  catalog(
-    @Args('id', { type: () => Int }) id: number,
-  ) {
-    return this.service.getCatalog(id);
-    
-  }
-
   @Query(returns => [CatalogType])
-  async catalogs(): Promise<CatalogType[]>{
-    try {
-      const catalogs = await this.service.getCatalogs();
-      return catalogs.map(catalog => ({ ...catalog, id: +catalog.id }));
-      //return this.service.getCatalogs();
-    }catch(error){
-      this.logger.error('Error getting catalogs in resolver', error.stack);
-      throw new Error('Failed to get catalogs'); // You can customize the error message as needed
-    }
-  }
-
-  @Query(returns => [CatalogType])
-  async getCatalogTranslation(
+  async getCatalogs(
     @Args('id', { nullable: true, type: () => Int }) id: number | null,
     @Args('lancode', { type: () => String }) lancode: string,
     @Args('ccode', { type: () => String }) ccode: string,
   ): Promise<CatalogType[]>{
     try{
-      const catalogtrans = await this.service.getCatalogTranslation(id, lancode, ccode);
-      return catalogtrans.map(cat =>({ ...cat, id: +cat.id}))
+      const catalogtrans = await this.service.getCatalogs(id, lancode, ccode);
+      return catalogtrans.map(cat =>({ ...cat, id: +cat.id}));
     }catch (error){
       this.logger.error('Error getting catalogs in resolver', error.stack);
       throw new Error('Failed to get catalogs'); // You can customize the error message as needed

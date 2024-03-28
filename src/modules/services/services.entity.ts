@@ -1,12 +1,16 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
-@Entity({ name: 'operative.general_catalog' })
+@Entity({ name: 'operative.services' })
 @ObjectType()
-export class Catalog {
+export class Services {
   @PrimaryGeneratedColumn()
   @Field(() => ID)
   id: number;
+
+  @Column({ name: 'catalog_id', nullable: false })
+  @Field()
+  catalogId: number;
 
   @Column()
   @Field()
