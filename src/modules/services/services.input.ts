@@ -17,6 +17,7 @@ export class ServicesInput{
   @Field()
   code: number;
 
+  @Field({ nullable: true })
   @Field()
   createdAt: Date | null;
 

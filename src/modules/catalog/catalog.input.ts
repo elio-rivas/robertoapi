@@ -15,6 +15,7 @@ export class CatalogInput {
     @Field()
     code: number;
 
+    @Field({ nullable: true })
     createdAt: Date | null;
 
     @Field()

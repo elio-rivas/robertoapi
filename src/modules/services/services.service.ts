@@ -79,8 +79,8 @@ export class ServicesService {
         service = this.servicesRepository.create({
           catalogId,
           description,
-          code,
           status,
+          code,
           createdAt: servicesInput.createdAt,
           createdBy,
           updatedAt: servicesInput.updatedAt,
