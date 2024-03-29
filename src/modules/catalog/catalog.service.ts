@@ -68,27 +68,9 @@ export class CatalogService {
     }
 
     async getCatalogs(id: number | null, lancode: string, ccode: string): Promise<Catalog[]> {
-        let query = `
-        SELECT
-            gc.id,
-            COALESCE(gct.description, gc.description) AS description
-        FROM
-            operative.general_catalog gc
-                LEFT JOIN
-            operative.general_catalog_translations gct ON gc.id = gct.catalog_id
-                AND (gct.language_code = $1 AND gct.country_code = $2)`;
-
-        const parameters = [lancode, ccode];
-
-        if (id !== null) {
-            query += ` WHERE gc.id = $${parameters.length + 1}`;
-            parameters.push(id.toString());
-        }
-
-        query += ` ORDER BY gc.id`;
-
-        try {
-            return await this.catalogRepository.query(query, parameters);
+       try {
+           const catalogs = await this.catalogRepository.query(`select * from operative.get_catalogs($1, $2,$3)`, [id, lancode, ccode]);
+            return catalogs.map(cat =>({ ...cat, id: +cat.id}));
         } catch (error) {
             this.logger.error(`Error retrieving catalog translations for ID ${id}: ${error.message}`, error.stack);
             throw new NotFoundException(`Catalog translations for ID ${id} not found`);

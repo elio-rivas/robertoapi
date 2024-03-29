@@ -14,28 +14,9 @@ export class ServicesService {
   ) {}
 
   async getServices(id: number | null, catalogId:number, lancode: string, ccode:string ): Promise<Services[]> {
-    let query = `
-        SELECT
-            s.id,
-            COALESCE(st.description, s.description) AS description
-        FROM
-            operative.services s
-                LEFT JOIN
-            operative.services_translations st ON s.id = st.service_id
-                AND (st.language_code = $2 AND st.country_code = $3)
-                WHERE s.catalog_id = $1 `;
-
-    const parameters = [catalogId,lancode, ccode];
-
-    if (id !== null) {
-      query += ` AND s.id = $${parameters.length + 1}`;
-      parameters.push(id.toString());
-    }
-
-    query += ` ORDER BY s.id`;
-
     try {
-      return await this.servicesRepository.query(query, parameters);
+      const services = await this.servicesRepository.query(`select * from operative.get_services($1,$2,$3,$4)`,[id, catalogId, lancode, ccode]);
+      return services || []; // If services is null or undefined, return an empty array
     } catch (error) {
       this.logger.error(`Error retrieving catalog translations for ID ${id}: ${error.message}`, error.stack);
       throw new NotFoundException(`Catalog translations for ID ${id} not found`);
