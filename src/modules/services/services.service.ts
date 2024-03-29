@@ -21,7 +21,7 @@ export class ServicesService {
         FROM
             operative.services s
                 LEFT JOIN
-            operative.services_translations st ON s.id = st.services_id
+            operative.services_translations st ON s.id = st.service_id
                 AND (st.language_code = $2 AND st.country_code = $3)
                 WHERE s.catalog_id = $1 `;
 
