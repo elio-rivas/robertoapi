@@ -7,6 +7,7 @@ import devConfig from '../config/properties_dev';
 import prodConfig from '../config/properties_prod';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { ServicesModule } from './services/services.module';
+import { SubservicesModule } from './subservices/subservices.module';
 
 
 const environment = process.env.NODE_ENV || 'development';
@@ -16,7 +17,8 @@ const databaseConfig: PostgresConnectionOptions = environment === 'production' ?
 
 const ServicesCatalog = [
   CatalogModule,
-  ServicesModule
+  ServicesModule,
+  SubservicesModule
 ];
 
 @Module({

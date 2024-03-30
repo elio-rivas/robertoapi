@@ -18,8 +18,8 @@ export class ServicesService {
       const services = await this.servicesRepository.query(`select * from operative.get_services($1,$2,$3,$4)`,[id, catalogId, lancode, ccode]);
       return services || []; // If services is null or undefined, return an empty array
     } catch (error) {
-      this.logger.error(`Error retrieving catalog translations for ID ${id}: ${error.message}`, error.stack);
-      throw new NotFoundException(`Catalog translations for ID ${id} not found`);
+      this.logger.error(`Error retrieving services translations for ID ${id}: ${error.message}`, error.stack);
+      throw new NotFoundException(`Service translations for ID ${id} not found`);
     }
   }
 
