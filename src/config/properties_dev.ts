@@ -1,6 +1,7 @@
 import {PostgresConnectionOptions} from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { Catalog } from '../modules/catalog/catalog.entity';
 import { Services } from "../modules/services/services.entity";
+import { Subservices } from "../modules/subservices/subservices.entity";
 
 const devConfig: PostgresConnectionOptions = {
   type: 'postgres',
@@ -11,7 +12,8 @@ const devConfig: PostgresConnectionOptions = {
   database: 'robertos_dev',
   entities: [
     Catalog,
-    Services
+    Services,
+    Subservices
   ],
   synchronize: false,
 };

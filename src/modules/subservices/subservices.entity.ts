@@ -9,7 +9,7 @@ export class Subservices{
   @Field( ()=> ID)
   id: number;
 
-  @Column({ name: 'service_id' })
+  @Column({ name: 'service_id' , nullable: false })
   @Field()
   serviceId: number;
 

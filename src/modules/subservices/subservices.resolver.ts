@@ -1,9 +1,9 @@
-import { Args, Int, Query, Resolver } from "@nestjs/graphql";
+import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { SubservicesType } from "./subservices.type";
 import { SubservicesService } from "./subservices.service";
 import { CatalogLogger } from "../catalog/catalog.logger";
 import { catchError, map, Observable } from "rxjs";
-
+import { SubservicesInput } from "./subservices.input";
 @Resolver(of => SubservicesType)
 export class SubservicesResolver{
   constructor(
@@ -25,6 +25,16 @@ export class SubservicesResolver{
           throw new Error('Failed to get SubServices'); // You can customize the error message here.
         })
       );
+  }
+
+  @Mutation(of => SubservicesType)
+  async createOrUpdateSubServices( @Args('SubServicesInput') SubServicesInput: SubservicesInput) {
+    try{
+      return await this.service.createOrUpdateSubServices(SubServicesInput);
+    }catch (error) {
+      this.logger.error('Error creating subservice in resolver', error.stack);
+      throw new Error('Failed to create subservice'); // You can customize the error message as needed.
+    }
   }
 
 }
