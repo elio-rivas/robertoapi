@@ -8,7 +8,7 @@ import prodConfig from '../config/properties_prod';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { ServicesModule } from './services/services.module';
 import { SubservicesModule } from './subservices/subservices.module';
-
+import { GatewayModule } from './gateway/gateway.module';
 
 const environment = process.env.NODE_ENV || 'development';
 const databaseConfig: PostgresConnectionOptions = environment === 'production' ? prodConfig : devConfig;
@@ -31,7 +31,8 @@ const ServicesCatalog = [
       autoSchemaFile: true,
       playground: true,
     }),
-    ...ServicesCatalog
+    ...ServicesCatalog,
+    GatewayModule
   ],
 })
 export class AppModule {}
