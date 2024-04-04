@@ -7,6 +7,10 @@ import { Subservices } from "./subservices.entity";
 
 @Module({
   imports:[TypeOrmModule.forFeature([Subservices])],
-  providers:[SubservicesResolver ,SubservicesService, CatalogLogger]
+  providers:[SubservicesResolver,
+             SubservicesService,
+            CatalogLogger,
+  ],
+  exports:[],
 })
 export class SubservicesModule {}

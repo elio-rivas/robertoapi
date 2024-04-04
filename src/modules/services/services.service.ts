@@ -4,13 +4,17 @@ import { Services } from "./services.entity";
 import { Repository } from "typeorm";
 import { CatalogLogger } from "../catalog/catalog.logger";
 import { ServicesInput } from "./services.input";
+import { Subservices } from "../subservices/subservices.entity";
 
 @Injectable()
 export class ServicesService {
   constructor(
     @InjectRepository(Services)
     private servicesRepository: Repository<Services>,
-    private logger: CatalogLogger
+    private logger: CatalogLogger,
+    @InjectRepository(Subservices)
+    private subservicesRepository: Repository<Subservices>
+
   ) {}
 
   async getServices(id: number | null, catalogId:number, lancode: string, ccode:string ): Promise<Services[]> {
@@ -74,4 +78,5 @@ export class ServicesService {
       throw error; // Re-throw the error to propagate it up the call stack
     }
   }
+
 }
