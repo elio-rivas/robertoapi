@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
 
 @ObjectType('Clients')
 export class ClientsType {
@@ -65,7 +65,7 @@ export class ClientsType {
   @Field({ nullable: true })
   updatedBy: number | null;
 
-  @Field({ nullable: true })
+  @Field(()=> Int,{ nullable: true })
   cityId: number | null;
 }
 
