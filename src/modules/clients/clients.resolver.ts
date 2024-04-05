@@ -1,6 +1,7 @@
-import { Args, Int, Query, Resolver } from "@nestjs/graphql";
+import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { ClientsType } from "./clients.types";
 import { ClientsService } from "./clients.service";
+import { ClientsInput } from "./clients.input";
 
 @Resolver(of => ClientsType)
 export class ClientsResolver {
@@ -19,4 +20,8 @@ export class ClientsResolver {
     }
   }
 
+  @Mutation(returns => ClientsType)
+  async createOrUpdateClients(@Args('clientData') clientData: ClientsInput ): Promise<ClientsType>{
+    return this.service.createOrUpdateClients(clientData);
+  }
 }
